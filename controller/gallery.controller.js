@@ -86,7 +86,6 @@ const updatePost = async (req, res) => {
   try {
     const id = parseInt(req.params.id);
     const { title, description } = req.body;
-    const image_url = req.file.path;
 
     const existingPost = await services.getPostById(id);
     if (!existingPost) {
@@ -94,6 +93,11 @@ const updatePost = async (req, res) => {
         status: "error",
         message: "Post not found",
       });
+    }
+
+    let image_url = existingPost.image_url;
+    if (req.file) {
+      image_url = req.file.path;
     }
 
     const data = {
@@ -129,24 +133,10 @@ const deletePost = async (req, res) => {
     }
 
     // delete file in ../public/images
-    const filePath = path.join(
-      // __dirname,
-      // "../controller/public/images",
-      existingPost.image_url
-    );
-    console.log(filePath);
+    const filePath = path.join(existingPost.image_url);
     if (fs.existsSync(filePath)) {
-      fs.rm(filePath);
+      fs.rmSync(filePath);
     }
-    // if (fs.existsSync(filePath)) {
-    //   try {
-    //     fs.rm(filePath);
-    //     console.log(`File deleted successfully: ${filePath}`);
-    //   } catch (error) {
-    //     console.error(`Failed to delete file: ${filePath}`);
-    //     throw error;
-    //   }
-    // }
 
     const result = await services.deletePost(id);
     res.status(200).json({
@@ -162,6 +152,7 @@ const deletePost = async (req, res) => {
   }
 };
 
+// upload to imagekit
 const uploadBanner = async (req, res) => {
   const file = req.file;
   const customFileName = `banner-${Date.now()}`;
