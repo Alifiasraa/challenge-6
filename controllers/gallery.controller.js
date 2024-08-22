@@ -5,7 +5,6 @@ const path = require("path");
 
 const createPost = async (req, res) => {
   try {
-    console.log(req.file);
     const { title, description } = req.body;
     const image_url = req.file.path;
 
@@ -172,7 +171,6 @@ const uploadBanner = async (req, res) => {
       });
     })
     .catch((error) => {
-      console.log(error);
       res.status(500).json({
         status: "error",
         message: error.message,
