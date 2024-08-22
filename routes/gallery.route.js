@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const controller = require("../controller/gallery.controller");
+const controller = require("../controllers/gallery.controller");
 const { upload } = require("../config/storage");
 const { cloud } = require("../config/storage/cloud");
 
