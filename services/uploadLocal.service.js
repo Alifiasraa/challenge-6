@@ -2,7 +2,7 @@ const prisma = require("../config/prisma");
 
 const createPost = async (data) => {
   const { title, description, image_url } = data;
-  const result = await prisma.gallery.create({
+  const result = await prisma.uploadLocal.create({
     data: {
       title: title,
       description: description,
@@ -13,34 +13,32 @@ const createPost = async (data) => {
 };
 
 const getAllPosts = async () => {
-  const result = await prisma.gallery.findMany();
-  return result;
+  return await prisma.uploadLocal.findMany({
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      image_url: true,
+    },
+  });
 };
 
 const getPostById = async (id) => {
-  const result = await prisma.gallery.findUnique({
-    where: {
-      id: id,
-    },
+  return await prisma.uploadLocal.findUnique({
+    where: { id },
   });
-  return result;
 };
 
 const updatePost = async (id, reqBody) => {
-  const result = await prisma.gallery.update({
-    where: {
-      id: id,
-    },
+  return await prisma.uploadLocal.update({
+    where: { id },
     data: reqBody,
   });
-  return result;
 };
 
 const deletePost = async (id) => {
-  await prisma.gallery.delete({
-    where: {
-      id: id,
-    },
+  await prisma.uploadLocal.delete({
+    where: { id },
   });
 };
 

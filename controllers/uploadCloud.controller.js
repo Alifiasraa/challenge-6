@@ -1,12 +1,10 @@
-const imageKitConf = require("../config/lib/imagekit");
-const services = require("../services/gallery.service");
-const fs = require("fs");
-const path = require("path");
+const services = require("../services/uploadCloud.service");
+const imagekit = require("../config/lib/imagekit");
 
 const createPost = async (req, res) => {
   try {
     const { title, description } = req.body;
-    const image_url = req.file.path;
+    const file = req.file;
 
     if (!title || !description) {
       return res.status(400).json({
@@ -22,10 +20,18 @@ const createPost = async (req, res) => {
       });
     }
 
+    const uploadImage = await imagekit.upload({
+      file: file.buffer.toString("base64"), // required
+      fileName: `image-${Date.now()}`,
+      folder: "/binar-assets",
+      tags: ["binar"],
+    });
+
     const result = await services.createPost({
       title,
       description,
-      image_url,
+      image_url: uploadImage.url,
+      file_id: uploadImage.fileId,
     });
     res.status(201).json({
       status: "success",
@@ -131,11 +137,9 @@ const deletePost = async (req, res) => {
       });
     }
 
-    // delete file in ../public/images
-    const filePath = path.join(existingPost.image_url);
-    if (fs.existsSync(filePath)) {
-      fs.rmSync(filePath);
-    }
+    // delete file in imagekit
+    const fileId = existingPost.file_id;
+    await imagekit.deleteFile(fileId);
 
     const result = await services.deletePost(id);
     res.status(200).json({
@@ -151,38 +155,11 @@ const deletePost = async (req, res) => {
   }
 };
 
-// upload to imagekit
-const uploadBanner = async (req, res) => {
-  const file = req.file;
-  const customFileName = `banner-${Date.now()}`;
-
-  imageKitConf
-    .upload({
-      file: file.buffer.toString("base64"), // required
-      fileName: customFileName,
-      folder: "/gallery-assets",
-      tags: ["gallery-banner"],
-    })
-    .then((response) => {
-      res.status(201).json({
-        status: "success",
-        message: "Banner Uploaded successfully",
-        data: response,
-      });
-    })
-    .catch((error) => {
-      res.status(500).json({
-        status: "error",
-        message: error.message,
-      });
-    });
-};
-
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePost,
   deletePost,
-  uploadBanner,
+  // uploadBanner,
 };

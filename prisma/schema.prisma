@@ -13,11 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Gallery {
+model UploadLocal {
   id          Int      @id @default(autoincrement())
   title       String
   description String
-  image_url   String?
+  image_url   String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model UploadCloud {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  image_url   String
+  file_id     String
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }
