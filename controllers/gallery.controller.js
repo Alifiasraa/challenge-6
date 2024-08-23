@@ -1,4 +1,4 @@
-const imageKitConf = require("../config/lib/imageKit");
+const imageKitConf = require("../config/lib/imagekit");
 const services = require("../services/gallery.service");
 const fs = require("fs");
 const path = require("path");
