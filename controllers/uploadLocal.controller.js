@@ -153,37 +153,10 @@ const deletePost = async (req, res) => {
   }
 };
 
-// const uploadBanner = async (req, res) => {
-//   const file = req.file;
-//   const customFileName = `banner-${Date.now()}`;
-
-//   imageKitConf
-//     .upload({
-//       file: file.buffer.toString("base64"), // required
-//       fileName: customFileName,
-//       folder: "/gallery-assets",
-//       tags: ["gallery-banner"],
-//     })
-//     .then((response) => {
-//       res.status(201).json({
-//         status: "success",
-//         message: "Banner Uploaded successfully",
-//         data: response,
-//       });
-//     })
-//     .catch((error) => {
-//       res.status(500).json({
-//         status: "error",
-//         message: error.message,
-//       });
-//     });
-// };
-
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePost,
   deletePost,
-  // uploadBanner,
 };
